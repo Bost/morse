@@ -3,10 +3,11 @@
 
   :url "https://github.com/otann/morse/"
 
-  :dependencies [[org.clojure/clojure "1.8.0" :scope "provided"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/tools.macro "0.1.5"]
-                 [org.clojure/core.async "0.4.474"]
-                 [org.clojure/tools.logging "0.4.1"]
+                 [org.clojure/core.async "0.2.374"]
+                 [org.clojure/tools.logging "0.3.1"]
+                 [org.clojure/spec.alpha "0.1.143"]
                  [clj-stacktrace "0.2.8"]
                  [cheshire "5.8.1"]
                  [clj-http "3.9.1"]]
