@@ -31,6 +31,12 @@
 
 (def base-url "https://api.telegram.org/bot")
 
+(defn test-fn
+  "test function"
+  ([]
+   (prn "testing new function...")))
+
+
 
 (defn get-updates-async
   "Receive updates from Bot via long-polling endpoint"
@@ -62,6 +68,45 @@
         query {:url webhook-url}]
     (http/get url {:as :json :query-params query})))
 
+(defn del-webhook
+  "Delete registered WebHook"
+  [token]
+  (let [url   (str base-url token "/deleteWebhook")]
+    (http/get url {})))
+
+(defn get-admins
+  "Get chat administrators"
+  [token ch]
+  (let [url   (str base-url token "/getChatAdministrators")
+        query {:chat_id ch}]
+    (http/get url {:as :json :query-params query})))
+
+(defn get-chat
+  "Get chat"
+  [token ch]
+  (let [url   (str base-url token "/getChat")
+        query {:chat_id ch}]
+    (http/get url {:as :json :query-params query})))
+
+(defn get-chat-member-count
+  "Get chat members count"
+  [token ch]
+  (let [url   (str base-url token "/getChatMembersCount")
+        query {:chat_id ch}]
+    (http/get url {:as :json :query-params query})))
+
+(defn get-chat-member
+  "Get chat member"
+  [token ch id]
+  (let [url   (str base-url token "/getChatMember")
+        query {:chat_id ch :user_id id}]
+    (http/get url {:as :json :query-params query})))
+(defn run-method
+  "Run any method with any query"
+  [token method qry]
+  (let [url   (str base-url token (str "/" method))
+        query qry]
+    (http/get url {:as :json :query-params query})))
 
 (defn get-file
   "Gets url of the file"
