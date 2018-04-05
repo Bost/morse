@@ -1,7 +1,7 @@
 (defproject morse "0.4.3"
   :description "Telegram Bot API"
 
-  :url "https://github.com/otann/morse/"
+  :url "https://github.com/lispers/morse/"
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/tools.macro "0.1.5"]
@@ -9,16 +9,16 @@
                  [org.clojure/tools.logging "0.3.1"]
                  [org.clojure/spec.alpha "0.1.143"]
                  [clj-stacktrace "0.2.8"]
-                 [cheshire "5.8.1"]
-                 [clj-http "3.9.1"]]
+                 [org.clojure/tools.namespace "0.2.11"]
+                 [org.clojure/tools.nrepl "0.2.12"]
+                 ]
+
+  ;:main morse.main
+  ;:repl-options {:init-ns morse.main}
 
   :plugins [[lein-cloverage "1.0.10"]]
 
-  :profiles {:uberjar {:aot :all}
-             :test    {:dependencies [[clj-http-fake "1.0.3"]]
-                       :plugins      [[pjstadig/humane-test-output "0.8.2"]
-                                      [com.jakemccrary/lein-test-refresh "0.14.0"]
-                                      [com.taoensso/timbre "4.1.4"]]}}
+  :profiles {:uberjar {:aot :all}}
 
   ;; Artifact deployment info
   :scm {:name "git"
@@ -35,7 +35,7 @@
                   ["deploy" "clojars"]]
 
   :pom-addition [:developers [:developer
-                              [:name "Anton Chebotaev"]
-                              [:url "http://otann.com"]
-                              [:email "anton.chebotaev@gmail.com"]
-                              [:timezone "+1"]]])
+                              [:name "Akaki Tkemaladze"]
+                              [:url "http://c-base.xyz"]
+                              [:email "kaki.tk@gmail.com"]
+                              [:timezone "+3"]]])
