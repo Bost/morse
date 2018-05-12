@@ -43,7 +43,7 @@
               (close! updates))
 
           ::api/error
-          (do (log/warn "Got error from Telegram API, stopping polling")
+          (do (log/warn "Got error from Telegram API, stopping polling" response)
               (close! running)
               (close! updates))
 
