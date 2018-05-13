@@ -13,13 +13,13 @@
 (defn get-updates-async
   "Receive updates from Bot via long-polling endpoint"
   ([token {:keys [limit offset timeout]}]
-   (let [url        (str base-url token "/getUpdates")
-         query      {:timeout (or timeout 1)
-                     :offset  (or offset 0)
-                     :limit   (or limit 100)}
-         request    {:query-params query
-                     :async?       true}
-         result     (a/chan)
+   (let [url (str base-url token "/getUpdates")
+         query {:timeout (or timeout 1)
+                :offset (or offset 0)
+                :limit (or limit 100)}
+         request {:query-params query
+                  :async? true}
+         result (a/chan)
          on-success (fn [resp]
                       (if-let [data (-> resp :body (json/parse-string true) :result)]
                         (a/put! result data)
