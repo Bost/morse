@@ -44,8 +44,9 @@
 
           ::api/error
           (do (log/warn "Got error from Telegram API, stopping polling" response)
-              (close! running)
-              (close! updates))
+            ;  (close! running)
+            ;  (close! updates)
+            )
 
           (do (close! wait-timeout)
               (doseq [upd data] (>! updates upd))
