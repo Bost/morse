@@ -19,17 +19,17 @@
   "Passed channel should be always empty.
    Close it to stop long-polling.
    Returns channel with updates from Telegram"
-  [running token opts]
-  (let [updates (a/chan)
-        ;; timeout for Telegram API in seconds
-        timeout (or (:timeout opts) 1)]
+  [running token {:keys [retry-on-error retry-on-timeout timeout]
+                  :or {retry-on-error false retry-on-timeout false timeout 1} :as opts}]
+  (let [updates (a/chan)]
     (go-loop [offset 0]
       (let [;; fix for JDK bug https://bugs.openjdk.java.net/browse/JDK-8075484
             ;; introduce additional timeout 10 times more that telegram's one
             wait-timeout (a/go (a/<! (a/timeout (* 1000 timeout 10)))
                                ::wait-timeout)
             response     (api/get-updates-async token (assoc opts :offset offset))
-            [data _] (a/alts! [running response wait-timeout])]
+            [data _]     (a/alts! [running response wait-timeout])]
+        (log/debug "Request offset:" offset)
         (case data
           ;; running got closed by the user
           nil
@@ -38,15 +38,20 @@
               (close! updates))
 
           ::wait-timeout
-          (do (log/error "HTTP request timed out, stopping polling")
-              (close! running)
-              (close! updates))
+          (if retry-on-timeout
+            (do (log/warn "HTTP request timed out, retrying")
+                (recur offset))
+            (do (log/error "HTTP request timed out, stopping polling")
+                (close! running)
+                (close! updates)))
 
           ::api/error
-          (do (log/warn "Got error from Telegram API, stopping polling" response)
-            ;  (close! running)
-            ;  (close! updates)
-            )
+          (if retry-on-error
+            (do (log/warn "Got error from Telegram API, retrying")
+                (recur offset))
+            (do (log/warn "Got error from Telegram API, stopping polling")
+                (close! running)
+                (close! updates)))
 
           (do (close! wait-timeout)
               (doseq [upd data] (>! updates upd))
