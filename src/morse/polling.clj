@@ -43,7 +43,8 @@
                 (recur offset))
             (do (log/error "HTTP request timed out, stopping polling")
                 (close! running)
-                (close! updates)))
+                (close! updates)
+                (throw (ex-info "HTTP request timed out, stopping polling" {:error :timeout}))))
 
           ::api/error
           (if retry-on-error
@@ -51,7 +52,8 @@
                 (recur offset))
             (do (log/warn "Got error from Telegram API, stopping polling")
                 (close! running)
-                (close! updates)))
+                (close! updates)
+                (throw (ex-info "Got error from Telegram API, stopping polling" {:error :telegram-api}))))
 
           (do (close! wait-timeout)
               (doseq [upd data] (>! updates upd))
