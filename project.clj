@@ -6,14 +6,14 @@
 
   :dependencies
   [
-   [org.clojure/clojure "1.9.0"]
+   [org.clojure/clojure "1.10.1"]
    [org.clojure/tools.macro "0.1.5"]
-   [org.clojure/core.async "0.2.374"]
-   [org.clojure/tools.logging "0.3.1"]
-   [org.clojure/spec.alpha "0.1.143"]
+   [org.clojure/core.async "1.2.603"]
+   [org.clojure/tools.logging "1.1.0"]
+   [org.clojure/spec.alpha "0.2.187"]
    [clj-stacktrace "0.2.8"]
-   [org.clojure/tools.namespace "0.2.11"]
-   [org.clojure/tools.nrepl "0.2.12"]
+   [org.clojure/tools.namespace "1.0.0"]
+   [org.clojure/tools.nrepl "0.2.13"]
    ]
 
   ;:main morse.main
@@ -22,7 +22,7 @@
   :plugins
   [
    ;; testing, coverage tool
-   [lein-cloverage "1.0.10"]
+   [lein-cloverage "1.1.2"]
 
    ;; leiningen project versions from git
    [com.roomkey/lein-v "7.2.0"]
