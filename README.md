@@ -40,7 +40,7 @@ you'll find similarities here:
   (:require [morse.handlers :as h]
             [morse.api :as t]))
 
-(def token "YOUR-BIG-SECRET")          
+(def token "YOUR-BIG-SECRET")
 
 ; This will define bot-api function, which later could be
 ; used to start your bot
@@ -61,11 +61,10 @@ you'll find similarities here:
   ; returns non-nil result processing update.
 
   ; Note that sending stuff to the user returns non-nil
-  ; response from Telegram API.     
+  ; response from Telegram API.
 
   ; So match-all catch-through case would look something like this:
   (h/message message (println "Intercepted message:" message)))
-
 ```
 
 ### Messages
@@ -277,15 +276,15 @@ Q-Codes in Morse are shorthands for common patterns. `morse.qcodes/direct-reply`
             [morse.handlers :as h]
             [somehttpserver :as http]))
 
-(def token "") 
+(def token "")
 (def webhook "")
 
 (defn just-say-hi [name]
   (str "Hi " name "!"))
-  
+
 (defhandler thisismyapp
   (message {:keys [text]} (just-say-hi text)))
-  
+
 (def therealhandler (q/direct-reply token thisismyapp))
 
 (morse.api/set-webhook token (str webhook "/" token)) ;; make webhooks safe by using the token as path

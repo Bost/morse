@@ -1,9 +1,10 @@
 (ns morse.qcodes
-  (:require [compojure.core :refer [make-route]]
-            [clojure.core.async :as a]
-            [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
-            [morse.api :as api]
-            [morse.polling :as pol]))
+  (:require
+   [compojure.core :refer [make-route]]
+   [clojure.core.async :as a]
+   [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
+   [morse.api :as api]
+   [morse.polling :as pol]))
 
 (defn- only [pred val]
   (when (pred val)

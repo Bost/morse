@@ -24,9 +24,9 @@
 
 (deftest get-user-profile-photos-request
   (let [options {:offset 2 :limit 5}
-        req     (-> (api/get-user-profile-photos token 1185125 options)
-                    (u/capture-request))
-        body    (json/decode (slurp (:body req)) true)]
+        req (-> (api/get-user-profile-photos token 1185125 options)
+                (u/capture-request))
+        body (json/decode (slurp (:body req)) true)]
 
     ; check that it is now post request
     (is (= :post (:request-method req)))
@@ -38,10 +38,11 @@
     (is (u/has-subset? {:offset 2 :limit 5} [body]))))
 
 (deftest send-text-request
-  (let [options {:parse_mode "Markdown" :reply_markup {:keyboard [[{:text "button"}]]}}
-        req     (-> (api/send-text token chat-id options "message")
-                    (u/capture-request))
-        body    (json/decode (slurp (:body req)) true)]
+  (let [options {:parse_mode "Markdown"
+                 :reply_markup {:keyboard [[{:text "button"}]]}}
+        req (-> (api/send-text token chat-id options "message")
+                (u/capture-request))
+        body (json/decode (slurp (:body req)) true)]
 
     ; check that it is now post request
     (is (= :post (:request-method req)))
@@ -53,15 +54,16 @@
     (is (u/has-subset? {:parse_mode "Markdown"} [body]))
 
     ; check that a nested option has encoded
-    (is (u/has-subset? {:reply_markup {:keyboard [[{:text "button"}]]}} [body]))))
+    (is (u/has-subset? {:reply_markup {:keyboard [[{:text "button"}]]}}
+                       [body]))))
 
 (deftest forward-message-request
   (let [[chat-id
          from-chat-id
          message-id] [239 240 1]
-        req          (-> (api/forward-message token chat-id from-chat-id message-id {})
-                         (u/capture-request))
-        body         (json/decode (slurp (:body req)) true)]
+        req (-> (api/forward-message token chat-id from-chat-id message-id {})
+                (u/capture-request))
+        body (json/decode (slurp (:body req)) true)]
 
     ; check that it is now post request
     (is (= :post (:request-method req)))
@@ -72,10 +74,12 @@
                         :message_id   message-id} [body]))))
 
 (deftest edit-text-request
-  (let [options {:parse_mode "Markdown" :reply_markup {:keyboard [[{:text "button"}]]}}
-        req     (-> (api/edit-text token chat-id message-id options "edited message")
-                    (u/capture-request))
-        body    (json/decode (slurp (:body req)) true)]
+  (let [options {:parse_mode "Markdown"
+                 :reply_markup {:keyboard [[{:text "button"}]]}}
+        req (-> (api/edit-text
+                 token chat-id message-id options "edited message")
+                (u/capture-request))
+        body (json/decode (slurp (:body req)) true)]
 
     ; check that it is now post request
     (is (= :post (:request-method req)))
@@ -89,12 +93,14 @@
     (is (u/has-subset? {:parse_mode "Markdown"} [body]))
 
     ; check that a nested option has encoded
-    (is (u/has-subset? {:reply_markup {:keyboard [[{:text "button"}]]}} [body]))))
+    (is (u/has-subset? {:reply_markup {:keyboard [[{:text "button"}]]}}
+                       [body]))))
 
 (deftest edit-reply-markup-request
-  (let [req     (-> (api/edit-reply-markup token chat-id message-id {:keyboard [[{:text "button"}]]})
-                    (u/capture-request))
-        body    (json/decode (slurp (:body req)) true)]
+  (let [req (-> (api/edit-reply-markup token chat-id message-id
+                                       {:keyboard [[{:text "button"}]]})
+                (u/capture-request))
+        body (json/decode (slurp (:body req)) true)]
 
     ; check that it is now post request
     (is (= :post (:request-method req)))
@@ -102,11 +108,12 @@
     ; check that default params are presented
     (is (u/has-subset? {:chat_id    chat-id
                         :message_id message-id
-                        :reply_markup {:keyboard [[{:text "button"}]]}} [body]))))
+                        :reply_markup
+                        {:keyboard [[{:text "button"}]]}} [body]))))
 
 (deftest delete-text-request
-  (let [req  (-> (api/delete-text token chat-id message-id)
-                 (u/capture-request))
+  (let [req (-> (api/delete-text token chat-id message-id)
+                (u/capture-request))
         body (json/decode (slurp (:body req)) true)]
     ; check that it is now post request
     (is (= :post (:request-method req)))
@@ -117,8 +124,8 @@
 
 (deftest send-photo-request
   (let [data (byte-array (map byte "content"))
-        req  (-> (api/send-photo token chat-id data)
-                 (u/capture-request))
+        req (-> (api/send-photo token chat-id data)
+                (u/capture-request))
         body (:multipart req)]
 
     ; check that it is post request
@@ -157,20 +164,22 @@
         (is (= updates (a/<!! (api/get-updates-async token {}))))))))
 
 (deftest answer-inline-request
-  (let [req  (-> (api/answer-inline token inline-query-id
-                                    {:is_personal true}
-                                    [{:type "gif" :id 31337 :gif_url "gif.gif"}])
+  (let [req (-> (api/answer-inline token inline-query-id
+                                   {:is_personal true}
+                                   [{:type "gif" :id 31337
+                                     :gif_url "gif.gif"}])
                  (u/capture-request))
         body (json/decode (slurp (:body req)) true)]
 
     (is (= :post (:request-method req)))
     (is (u/has-subset? {:inline_query_id inline-query-id} [body]))
-    (is (u/has-subset? {:results [{:type "gif" :id 31337 :gif_url "gif.gif"}]} [body]))
+    (is (u/has-subset? {:results [{:type "gif" :id 31337 :gif_url "gif.gif"}]}
+                       [body]))
     (is (u/has-subset? {:is_personal true} [body]))))
 
 (deftest answer-callback-request
-  (let [req  (-> (api/answer-callback token callback-query-id "text" true)
-                 (u/capture-request))
+  (let [req (-> (api/answer-callback token callback-query-id "text" true)
+                (u/capture-request))
         body (json/decode (slurp (:body req)) true)]
 
     (is (= :post (:request-method req)))
