@@ -20,7 +20,8 @@
    Close it to stop long-polling.
    Returns channel with updates from Telegram"
   [running token {:keys [retry-on-error retry-on-timeout timeout]
-                  :or {retry-on-error false retry-on-timeout false timeout 1} :as opts}]
+                  :or {retry-on-error false retry-on-timeout false timeout 1} :as opts}
+   api-error-handle-fn]
   (let [updates (a/chan)]
     (go-loop [offset 0]
       (let [;; fix for JDK bug https://bugs.openjdk.java.net/browse/JDK-8075484
@@ -38,22 +39,24 @@
               (close! updates))
 
           ::wait-timeout
-          (if retry-on-timeout
-            (do (log/warn "HTTP request timed out, retrying")
-                (recur offset))
-            (do (log/error "HTTP request timed out, stopping polling")
-                (close! running)
-                (close! updates)
-                (throw (ex-info "HTTP request timed out, stopping polling" {:error :timeout}))))
+          (let [msg "::wait-timeout received from Telegram API"]
+            (if retry-on-timeout
+              (do (log/warn (str msg ", retrying"))
+                  (recur offset))
+              (do (log/error (str msg ", stopping polling"))
+                  (close! running)
+                  (close! updates)
+                  (api-error-handle-fn))))
 
           ::api/error
-          (if retry-on-error
-            (do (log/warn "Got error from Telegram API, retrying")
-                (recur offset))
-            (do (log/warn "Got error from Telegram API, stopping polling")
-                (close! running)
-                (close! updates)
-                (throw (ex-info "Got error from Telegram API, stopping polling" {:error :telegram-api}))))
+          (let [msg "::api/error received from Telegram API"]
+            (if retry-on-error
+              (do (log/warn (str msg ", retrying"))
+                  (recur offset))
+              (do (log/warn (str msg ", stopping polling") )
+                  (close! running)
+                  (close! updates)
+                  (api-error-handle-fn))))
 
           (do (close! wait-timeout)
               (doseq [upd data] (>! updates upd))
