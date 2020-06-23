@@ -14,6 +14,7 @@
    [clj-stacktrace "0.2.8"]
    [org.clojure/tools.namespace "1.0.0"]
    [org.clojure/tools.nrepl "0.2.13"]
+   [cheshire "5.10.0"]
    ]
 
   ;:main morse.main
