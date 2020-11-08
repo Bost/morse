@@ -1,7 +1,8 @@
 (ns morse.handlers
-  [:require [clojure.string :as s]
-            [clojure.tools.macro :as macro]])
-
+  [:require
+   ;; [morse.api :as t]
+   [clojure.string :as s]
+   [clojure.tools.macro :as macro]])
 
 (defn handling
   "Apply list of handlers to Telegram update"
@@ -22,6 +23,12 @@
   (let [[name routes] (macro/name-with-attributes name routes)]
     `(def ~name (handlers ~@routes))))
 
+;; thanks to https://stackoverflow.com/a/9273469
+(defmacro functionize [macro name]
+  `(fn [& args#] (eval (flatten (cons ['~macro '~name] args#)))))
+
+(defmacro apply-macro [macro name args]
+  `(apply (functionize ~macro ~name) ~args))
 
 (defn command?
   "Checks if message is a command with a name.
@@ -96,11 +103,7 @@
   (command "chroma" message (handle-text message))
 
 
-  (defhandler handler
-    (handler-fn "start"
-                (fn [{{id :id :as chat} :chat}]
-                  (println "Bot joined new chat: " chat)))
-
+  (defhandler handler1
     (command "start" [{{id :id :as chat} :chat}]
       (println "Bot joined new chat: " chat)
       (t/send-text token id "Welcome!"))
@@ -112,6 +115,25 @@
     (message {{id :id} :chat :as message}
       (println "Intercepted message: " message)
       (t/send-text token id "I don't do a whole lot ... yet.")))
+
+  (def token "...")
+
+  (def cmds [(command "start" [{{id :id :as chat} :chat}]
+                      (println "Bot joined new chat: " chat)
+                      (t/send-text token id "Welcome!"))
+
+             (command "help" {{id :id :as chat} :chat}
+                      (println "Help was requested in " chat)
+                      (t/send-text token id "Help is on the way"))
+
+             (message {{id :id} :chat :as message}
+                      (println "Intercepted message: " message)
+                      (t/send-text token id "I don't do a whole lot ... yet."))])
+
+  (apply-macro defhandler handler2 cmds)
+
+  ;; handler1 and handler2 should be equal
+
 
   ; then run in your repl:
   (polling/start token bot-api)
