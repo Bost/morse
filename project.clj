@@ -15,6 +15,7 @@
    [org.clojure/tools.namespace "1.0.0"]
    [org.clojure/tools.nrepl "0.2.13"]
    [cheshire "5.10.0"]
+   [clj-http "3.10.3"]
    ]
 
   ;:main morse.main
