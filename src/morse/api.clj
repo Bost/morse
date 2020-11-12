@@ -75,7 +75,7 @@
   "Delete registered WebHook"
   [token]
   (let [url   (str base-url token "/deleteWebhook")]
-    (http/get url {})))
+    (http/get url {:as :json})))
 
 (defn get-admins
   "Get chat administrators"
@@ -104,6 +104,7 @@
   (let [url   (str base-url token "/getChatMember")
         query {:chat_id ch :user_id id}]
     (http/get url {:as :json :query-params query})))
+
 (defn run-method
   "Run any method with any query"
   [token method qry]
