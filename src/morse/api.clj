@@ -65,6 +65,12 @@
         query {:url webhook-url}]
     (http/get url {:as :json :query-params query})))
 
+(defn get-info-webhook
+  "curl --request POST https://api.telegram.org/bot$TELEGRAM_TOKEN/getWebhookInfo"
+  [token]
+  (let [url   (str base-url token "/getWebhookInfo")]
+    (http/get url {:as :json})))
+
 (defn del-webhook
   "Delete registered WebHook"
   [token]
