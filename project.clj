@@ -6,16 +6,16 @@
 
   :dependencies
   [
-   [org.clojure/clojure "1.10.1"]
+   [org.clojure/clojure "1.10.2"]
    [org.clojure/tools.macro "0.1.5"]
-   [org.clojure/core.async "1.2.603"]
+   [org.clojure/core.async "1.3.610"]
    [org.clojure/tools.logging "1.1.0"]
-   [org.clojure/spec.alpha "0.2.187"]
+   [org.clojure/spec.alpha "0.2.194"]
    [clj-stacktrace "0.2.8"]
-   [org.clojure/tools.namespace "1.0.0"]
+   [org.clojure/tools.namespace "1.1.0"]
    [org.clojure/tools.nrepl "0.2.13"]
    [cheshire "5.10.0"]
-   [clj-http "3.10.3"]
+   [clj-http "3.11.0"]
    ]
 
   ;:main morse.main
