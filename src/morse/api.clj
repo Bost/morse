@@ -170,6 +170,18 @@
                                :form-params  query})]
      (-> resp :body))))
 
+(defn edit-media
+  "Edits a animation, audio, document, photo, or video messages
+  (https://core.telegram.org/bots/api#editmessagemedia)"
+  ([token chat-id message-id media] (edit-media token chat-id message-id {} media))
+  ([token chat-id message-id options media]
+   (let [url   (str base-url token "/editMessageMedia")
+         query (into {:chat_id chat-id :media media :message_id message-id} options)
+         resp  (http/post url {:content-type :json
+                               :as           :json
+                               :form-params  query})]
+     (-> resp :body))))
+
 (defn edit-reply-markup
   "Edits only the reply markup of message
   (https://core.telegram.org/bots/api#editmessagereplymarkup)"
