@@ -41,7 +41,8 @@
           (first)
           (s/split #"@")
           (first)
-          (= (str "/" name))))
+          (s/lower-case)
+          (= (str "/" (s/lower-case name)))))
 
 
 (defn command-fn
